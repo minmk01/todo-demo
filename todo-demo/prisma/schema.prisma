@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  records Record[]
+  comments Comment[]
+  selfInterviews SelfInterview[]
+  name String
+  email String @unique
+  createdDate DateTime @default(now())
+}
+
+model Record {
+  id Int @id @default(autoincrement())
+  author User @relation(fields: [authorId], references: [id])
+  authorId Int
+  contents String
+  feeling String
+  oneSentence String
+  isShared Boolean @default(false)
+  like Int @default(0)
+  cheerUp Int @default(0)
+  comments Comment[]
+  createdDate DateTime @default(now())
+  updatedDate DateTime @default(now()) @updatedAt 
+}
+
+model Comment {
+  id Int @id @default(autoincrement())
+  author User @relation(fields: [authorId], references: [id])
+  authorId Int
+  record Record @relation(fields: [recordId], references: [id])
+  recordId Int
+  contents String
+  createdDate DateTime @default(now())
+  updatedDate DateTime @default(now()) @updatedAt 
+}
+
+model SelfInterview {
+  id Int @id @default(autoincrement())
+  author User @relation(fields: [authorId], references: [id])
+  authorId Int
+  question String
+  answer String
+  createdDate DateTime @default(now())
+  updatedDate DateTime @default(now()) @updatedAt 
+}
+
